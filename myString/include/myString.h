@@ -3,6 +3,7 @@
 
 
 #include <iostream>
+#include "Exceptions.h"
 
 namespace luke {
     typedef unsigned long ul;
@@ -53,6 +54,8 @@ namespace luke {
 
         void optimize();
 
+        char& at(const ul index) const;
+
         char& operator[] (const ul index);
         const char& operator[] (const ul index) const;
 
@@ -71,6 +74,8 @@ namespace luke {
 
         bool operator != (const luke::myString& str);
         bool operator != (const char* str);
+
+
 
         void print();
 

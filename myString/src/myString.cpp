@@ -2,7 +2,9 @@
 
 //  Default Constructor
 luke::myString::myString() {
-
+    arr = new char[SIZE];
+    _capacity = SIZE;
+    _size = 0;
 }
 
 //  Destructor
@@ -13,7 +15,16 @@ luke::myString::~myString() {
 }
 // Constructor
 luke::myString::myString(const char* str) {
-
+    if (str) {
+        _size = getSize(str);
+        _capacity = _size;
+        arr = new char[_capacity];
+        for (ul i = 0; i < _size; ++i) {
+            arr[i] = str[i];
+        }
+    } else {
+        throw myString_init_error();
+    }
 }
 
 //  Copy Constructor
@@ -50,7 +61,7 @@ void luke::myString::resize(const ul n) {
 }
 
 luke::ul luke::myString::capacity() const {
-
+    return _capacity;
 }
 
 void luke::myString::reserve(const ul) {
@@ -69,11 +80,19 @@ void luke::myString::optimize() {
 
 }
 
-char& luke::myString::operator[] (const ul index) {
+char& luke::myString::at(const ul index) const {
+    if (index < 0 || index >= _size) {
+        throw myString_out_of_range();
+    } else {
+        return arr[index];
+    }
+}
 
+char& luke::myString::operator[] (const ul index) {
+    return this->at(index);
 }
 const char& luke::myString::operator[] (const ul index) const {
-
+    return this->at(index);
 }
 
 luke::myString& luke::myString::operator += (const luke::myString& str) {
@@ -112,6 +131,17 @@ bool luke::myString::operator != (const luke::myString& str) {
 }
 bool luke::myString::operator != (const char* str) {
 
+}
+
+
+
+luke::ul luke::myString::getSize(const char* str) {
+    ul temp = 0;
+    while (*str) {
+        ++temp;
+        ++str;
+    }
+    return temp;
 }
 
 void luke::myString::print() {

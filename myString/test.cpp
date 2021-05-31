@@ -8,11 +8,19 @@ TEST(testFramework, test1) {
 }
 
 TEST(testMyString, testDefaultConstructor) {
-
+    luke::myString str1;
+    EXPECT_EQ(str1.size(), 0);
+    EXPECT_EQ(str1.capacity(), 32);
 }
 
 TEST(testMyString, testConstructor) {
+    luke::myString str1("Hello World");
+    EXPECT_EQ(str1.size(), 11);
+    EXPECT_EQ(str1.capacity(), 11);
+    EXPECT_EQ(str1.at(0), 'H');
 
+    const char* c = nullptr;
+    EXPECT_THROW(luke::myString str1(c), std::runtime_error);
 }
 
 TEST(testMyString, testCopyConstructor) {
@@ -47,9 +55,40 @@ TEST(testMyString, testOptimize) {
 
 }
 
-TEST(testMyString, ) {
+TEST(testMyString, testAt) {
+    luke::myString str1("Hello");
+    EXPECT_EQ(str1.at(0), 'H');
+    EXPECT_THROW(str1.at(5), std::runtime_error);
+}
+
+TEST(testMyString, testOperatorIndex) {
+    luke::myString str1("Hello");
+    EXPECT_EQ(str1[0], 'H');
+    EXPECT_THROW(str1[5], std::runtime_error);
+}
+
+TEST(testMyString, testPlusEquals) {
 
 }
+
+TEST(testMyString, testInsert) {
+
+}
+
+TEST(testMyString, testErase) {
+
+}
+
+TEST(testMyString, testEqualTo) {
+
+}
+
+TEST(testMyString, testNotEqualTo) {
+
+}
+
+
+
 
 
 
