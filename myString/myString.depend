@@ -1,10 +1,15 @@
 # depslib dependency file v1.0
-1622483929 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/src/myString.cpp
+1622499174 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/src/myString.cpp
 	"myString.h"
 
-1622483929 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/myString.h
+1622499171 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/myString.h
+	<iostream>
 
 1622484058 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/test.cpp
 	"gtest/gtest.h"
+	"myString.h"
+
+1622497910 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/main.cpp
+	<iostream>
 	"myString.h"
 
