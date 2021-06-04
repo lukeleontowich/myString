@@ -8,18 +8,16 @@
 
 namespace luke
 {
-typedef unsigned long ul;
-constexpr int SIZE = 32;
-
+constexpr unsigned short SIZE = 32;
+constexpr unsigned short MAX_SIZE = 60000;
 
 
 class myString
 {
     char* arr = nullptr;
-    ul _size = 0;
-    ul _capacity = 0;
-    ul getSize(const char* str);
-    void addSpace(const ul new_size);
+    unsigned short _size = 0;
+    unsigned short _capacity = 0;
+    unsigned short getSize(const char* str);
 
 public:
     struct iterator;
@@ -44,14 +42,14 @@ public:
     luke::myString & operator = (const luke::myString&& str);
 
     //  size
-    ul size() const;
+    unsigned short size() const;
 
-    void resize(const ul n, const char c);
-    void resize(const ul n);
+    void resize(const unsigned short n, const char c);
+    void resize(const unsigned short n);
 
-    ul capacity() const;
+    unsigned short capacity() const;
 
-    void reserve(const ul);
+    void reserve(const unsigned short);
 
     void clear();
 
@@ -59,20 +57,19 @@ public:
 
     void optimize();
 
-    char& at(const ul index) const;
+    char& at(const unsigned short index) const;
 
-    char& operator[] (const ul index);
-    const char& operator[] (const ul index) const;
+    char& operator[] (const unsigned short index);
+    const char& operator[] (const unsigned short index) const;
 
     luke::myString& operator += (const luke::myString& str);
     luke::myString& operator += (const char* str);
     luke::myString& operator += (const char c);
 
-    void insert(const luke::myString& str, const ul index);
-    void insert(const char* str, const ul index);
+    void insert(const unsigned short pos, const luke::myString& str);
+    void insert(const unsigned short pos, const char* str);
 
-    bool erase(const ul begin, const ul end);
-    bool erase(const ul index);
+    bool erase(const unsigned short pos, const unsigned short len);
 
     bool operator == (const luke::myString& str);
     bool operator == (const char* str);
@@ -91,7 +88,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& o,
                                       const luke::myString& str) {
-        for (ul i = 0; i < str.size(); ++i) {
+        for (unsigned short i = 0; i < str.size(); ++i) {
             o << str.arr[i];
         }
         return o;
@@ -118,12 +115,11 @@ public:
         iterator operator++(int);
         iterator& operator -- ();
         iterator operator--(int);
-        friend bool operator == (const iterator& i1, const iterator& i2)
-        {
+
+        friend bool operator == (const iterator& i1, const iterator& i2) {
             return ((i1.ptr == i2.ptr) ? true : false);
         }
-        friend bool operator != (const iterator& i1, const iterator& i2)
-        {
+        friend bool operator != (const iterator& i1, const iterator& i2) {
             return ((i1.ptr == i2.ptr) ? false : true);
         }
     private:

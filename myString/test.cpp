@@ -46,25 +46,61 @@ TEST(testMyString, testMoveAssignment) {
 
 }
 
-TEST(testMyString, testSize) {
-
-}
 
 TEST(testMyString, testResize) {
     luke::myString str1("Bonjour");
     luke::myString str2(str1);
+    str2.resize(15);
+    EXPECT_EQ(15, str2.capacity());
+    EXPECT_EQ(7, str2.size());
+    EXPECT_TRUE(str2 == "Bonjour");
+    str2.resize(6, 'j');
+    EXPECT_EQ(6, str2.capacity());
+    EXPECT_EQ(6, str2.size());
+    EXPECT_TRUE(str2 == "jjjjjj");
 }
 
-TEST(testMyString, testCapacity) {
 
+TEST(testMyString, testReserve) {
+    luke::myString str1("hello");
+    str1.reserve(1);
+    EXPECT_EQ(str1.size(), 5);
+    EXPECT_EQ(str1.capacity(), 5);
+    EXPECT_TRUE(str1 == "hello");
+
+
+    luke::myString str2("hello");
+    str2.reserve(20);
+    EXPECT_EQ(20, str2.capacity());
+    EXPECT_EQ(5, str2.size());
+    EXPECT_TRUE(str2 == "hello");
+    str2 += " world";
+    EXPECT_EQ(20, str2.capacity());
+    EXPECT_EQ(11, str2.size());
+    EXPECT_TRUE(str2 == "hello world");
+
+    luke::myString str3;
+    str3.reserve(20);
+    EXPECT_EQ(20, str3.capacity());
+    EXPECT_EQ(0, str3.size());
+    str3 = "bonjour";
+    EXPECT_EQ(20, str3.capacity());
+    EXPECT_EQ(7, str3.capacity());
+    EXPECT_TRUE(str3 == "bonjour");
 }
 
 TEST(testMyString, testClear) {
-
+    luke::myString str("hello");
+    str.clear();
+    EXPECT_EQ(0, str.size());
+    EXPECT_EQ(0, str.capacity());
 }
 
 TEST(testMyString, testEmpty) {
-
+    luke::myString str1("hello");
+    EXPECT_FALSE(str1.empty());
+    str1.clear();
+    EXPECT_TRUE(str1.empty());
 }
 
 TEST(testMyString, testOptimize) {
@@ -129,35 +165,81 @@ TEST(testMyString, testPlusEquals) {
     EXPECT_TRUE((str5 == "my strings") ? true : false);
 }
 
-TEST(testMyString, testInsert) {
+TEST(testMyString, testInsert1) {
+    luke::myString str1("My Luke");
+    luke::myString str2("name is ");
+    str1.insert(3, str2);
+    EXPECT_TRUE(str1 == "My name is Luke");
+    std::cout << str1 << "\n";
+    EXPECT_THROW(str1.insert(15, str2), std::runtime_error);
+    EXPECT_EQ(15, str1.capacity());
+    EXPECT_EQ(15, str1.size());
 
+    luke::myString str3;
+    str3.reserve(20);
+    str3 = "My Luke";
+    str3.insert(3, str2);
+    EXPECT_TRUE(str3 == "My name is Luke");
+    EXPECT_EQ(20, str3.size());
+    EXPECT_EQ(14, str3.capacity());
+}
+
+TEST(testMyString, testInsert2) {
+    luke::myString str4("Bonjour Luke");
+    str4.insert(8, ", mon nom est ");
+    EXPECT_TRUE(str4 == "Bonjour, mon nom est Luke");
+    EXPECT_EQ(25, str4.size());
+    EXPECT_EQ(25, str4.capacity());
+    EXPECT_THROW(str4.insert(35, "qqc"), std::runtime_error);
+
+    luke::myString str5;
+    str5.reserve(30);
+    str5 = "Bonjour Luke";
+    EXPECT_TRUE(str5 == ", mon nom est ");
+    EXPECT_EQ(25, str5.size());
+    EXPECT_EQ(30, str5.capacity());
 }
 
 TEST(testMyString, testErase) {
     luke::myString str1("Hello");
-    //str1.erase(1, 3);
-    EXPECT_TRUE((str1 == "ell") ? true : false);
-    luke::myString str2("Bonjour");
-    str2.erase(1);
-    //std::cout << "str2: " << str2 << "\n";
-    EXPECT_TRUE((str2 == "Bnjour") ? true : false);
+    auto str2 = str1;
+    auto str3 = str1;
+    str1.erase(1, 3);
+    EXPECT_TRUE((str1 == "Ho") ? true : false);
+    EXPECT_THROW(str2.erase(-1, 4), std::runtime_error);
+    EXPECT_THROW(str3.erase(1,5), std::runtime_error);
 
+    std::cout << "str1: " << str1 << "\n";
 }
 
 TEST(testMyString, testEqualTo) {
-
+    luke::myString str1("Bonjour");
+    luke::myString str2("Bonjour");
+    luke::myString str3(str1);
+    auto str4 = str2;
+    EXPECT_TRUE(str1 == str2);
+    EXPECT_TRUE(str1 == str3);
+    EXPECT_TRUE(str1 == str4);
+    EXPECT_TRUE(str2 == str3);
+    EXPECT_TRUE(str2 == str4);
+    EXPECT_TRUE(str3 == str4);
 }
 
 TEST(testMyString, testNotEqualTo) {
-
+    luke::myString str1("Hello");
+    luke::myString str2("Bonjour");
+    luke::myString str3("Hello_");
+    EXPECT_TRUE(str1 != str2);
+    EXPECT_TRUE(str1 != str3);
+    EXPECT_TRUE(str2 != str3);
 }
 
 TEST(testFriends, testIoStream) {
-    luke::myString str1;
+    /*luke::myString str1;
     std::cin >> str1;
     EXPECT_TRUE((str1 == "Hello") ? true : false);
     EXPECT_EQ(5 ,str1.size());
-    EXPECT_EQ(5, str1.size());
+    EXPECT_EQ(5, str1.size());*/
 }
 
 /*
@@ -174,15 +256,11 @@ TEST(testString, testResize) {
 
 TEST(testAlgorithms, testSort) {
     luke::myString str1("asdfbdg");
-    //std::sort(str1.begin(), str1.end());
-    //EXPECT_TRUE((str1=="abdfgs") ? true : false);
-    auto it = std::max_element(str1.begin(), str1.end());
-    std::cout << "it: " << *it << "\n";
-    std::cout << "count: " << std::count(str1.begin(), str1.end(), 'd') << "\n";
     std::sort(str1.cbegin(), str1.cend());
-    EXPECT_TRUE((str1 == "abddfgs") ? true : false);
-    std::cout << str1 << "\n";
+    EXPECT_TRUE(str1 == "abddfgs");
 }
+
+
 
 
 

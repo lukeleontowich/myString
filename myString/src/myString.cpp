@@ -19,7 +19,7 @@ luke::myString::myString(const char* str) {
         _size = getSize(str);
         _capacity = _size;
         arr = new char[_capacity];
-        for (ul i = 0; i < _size; ++i) {
+        for (unsigned short i = 0; i < _size; ++i) {
             arr[i] = str[i];
         }
     } else {
@@ -71,12 +71,16 @@ luke::myString& luke::myString::operator = (const luke::myString&& str) {
 }
 
 //  size
-luke::ul luke::myString::size() const {
+unsigned short luke::myString::size() const {
     return _size;
 }
 
 //  Fix resize for case when n < size
-void luke::myString::resize(const ul n, const char c) {
+void luke::myString::resize(const unsigned short n, const char c) {
+    if (n < 0 || n >= MAX_SIZE) {
+        throw myString_out_of_range();
+        return;
+    }
     delete [] arr;
     _capacity = n;
     _size = n;
@@ -86,7 +90,11 @@ void luke::myString::resize(const ul n, const char c) {
     }
 
 }
-void luke::myString::resize(const ul n) {
+void luke::myString::resize(const unsigned short n) {
+    if (n < 0 || n >= MAX_SIZE) {
+        throw myString_out_of_range();
+        return;
+    }
     luke::myString temp(*this);
     delete [] arr;
     _capacity = n;
@@ -97,18 +105,26 @@ void luke::myString::resize(const ul n) {
     }
 }
 
-luke::ul luke::myString::capacity() const {
+unsigned short luke::myString::capacity() const {
     return _capacity;
 }
 
-void luke::myString::reserve(const ul n) {
-    if (_size == 0) {
+void luke::myString::reserve(const unsigned short n) {
+    if (arr == nullptr) {
+        _size = 0;
         _capacity = n;
-        if (arr != nullptr)
-            delete [] arr;
         arr = new char[_capacity];
+    } else if (_capacity >= n) {
+        luke::myString temp(*this);
+        _capacity = n;
+        delete [] arr;
+        arr = new char[_capacity];
+        for (unsigned short i = 0; i < _size; ++i) {
+            arr[i] = temp[i];
+        }
     } else {
-        this->resize(n);
+        return;
+
     }
 }
 
@@ -137,7 +153,7 @@ void luke::myString::optimize() {
     }
 }
 
-char& luke::myString::at(const ul index) const {
+char& luke::myString::at(const unsigned short index) const {
     if (index < 0 || index >= _size) {
         throw myString_out_of_range();
     } else {
@@ -145,10 +161,10 @@ char& luke::myString::at(const ul index) const {
     }
 }
 
-char& luke::myString::operator[] (const ul index) {
+char& luke::myString::operator[] (const unsigned short index) {
     return this->at(index);
 }
-const char& luke::myString::operator[] (const ul index) const {
+const char& luke::myString::operator[] (const unsigned short index) const {
     return this->at(index);
 }
 
@@ -178,14 +194,14 @@ luke::myString& luke::myString::operator += (const luke::myString& str) {
     }
 }
 luke::myString& luke::myString::operator += (const char* str) {
-    ul str_size = getSize(str);
+    unsigned short str_size = getSize(str);
     if (_size + str_size > _capacity) {
         luke::myString temp(*this);
         delete [] arr;
         _capacity = temp.size() + str_size;
         _size = _capacity;
         arr = new char[_capacity];
-        int i = 0;
+        unsigned short i = 0;
         for (;i < temp.size(); ++i) {
             arr[i] = temp[i];
         }
@@ -219,59 +235,93 @@ luke::myString& luke::myString::operator += (const char c) {
     }
 }
 
-//  Index of where to start the insertion
-void luke::myString::insert(const luke::myString& str, const ul index) {
-    //luke::myString temp(str);
-    //if (_capacity + str.size() > )
-
-}
-void luke::myString::insert(const char* str, const ul index) {
-
-}
-
-bool luke::myString::erase(const ul begin, const ul end) {
-    if (begin < 0 || end >= _size) {
+void luke::myString::insert(const unsigned short pos, const luke::myString& str) {
+    if (pos < 0 || pos >= _size) {
         throw myString_out_of_range();
-        return false;
-    } else {
-        luke::myString temp1;
-        luke::myString temp2;
-        temp1.reserve(begin - _size);
-        temp2.reserve(_size - end);
-
-        for (int i = 0; i < begin; ++i) {
-            temp1[i] = arr[i];
-        }
-        for (int i = end; i < _size; ++i) {
-            temp2[i] = arr[i];
-        }
+        return;
+    }
+    _size += str.size();
+    luke::myString temp(*this);
+    if (_size > _capacity) {
+        _capacity = _size;
         delete [] arr;
-        arr = new char[temp1.capacity()+temp2.capacity()];
-        int i = 0;
-        for (; i < temp1.size(); ++i) {
-            arr[i] = temp1[i];
-        }
-        for (;i < temp2.size(); ++i) {
-            arr[i] = temp2[i];
-        }
+        arr = new char[_capacity];
+    }
+
+    unsigned short i = 0, j = 0, k = 0;
+    while (i < pos) {
+        arr[i] = temp[k];
+        ++i;
+        ++k;
+    }
+    while (j < str.size()) {
+        arr[i] = str[j];
+        ++i;
+        ++j;
+    }
+    while (k < temp.size()) {
+        arr[i] = temp[k];
+        ++i;
+        ++k;
+    }
+
+}
+
+void luke::myString::insert(const unsigned short pos, const char* str) {
+    if (pos < 0 || pos >= _size) {
+        throw myString_out_of_range();
+        return;
+    }
+    auto str_size = getSize(str);
+    _size += str_size;
+    luke::myString temp(*this);
+    if (_size > _capacity) {
+        _capacity = _size;
+        delete [] arr;
+        arr = new char[_capacity];
+    }
+
+    unsigned short i = 0, j = 0, k = 0;
+    while (i < pos) {
+        arr[i] = temp[k];
+        ++i;
+        ++k;
+    }
+    while (j < str_size) {
+        arr[i] = str[j];
+        ++i;
+        ++j;
+    }
+    while (k < temp.size()) {
+        arr[i] = temp[k];
+        ++i;
+        ++k;
     }
 }
-bool luke::myString::erase(const ul index) {
-    if (index < 0 || index >= _size) {
+
+bool luke::myString::erase(const unsigned short pos, const unsigned short len) {
+    if (pos < 0 || pos >= _size || pos+len >= _size) {
         throw myString_out_of_range();
         return false;
     } else {
         luke::myString temp(*this);
-        int j = 0;
-        for (int i = 0; i < _size; ++i) {
-            if (i != index) {
-                arr[j] = temp[i];
-                ++j;
-            }
-        --_size;
+        delete [] arr;
+        _size = temp.size() - len;
+        _capacity = _size;
+        arr = new char[_capacity];
+        unsigned short i = 0;
+        while (i < pos) {
+            arr[i] = temp[i];
+            ++i;
+        }
+        while (i < _size) {
+            arr[i] = temp[i+len];
+            ++i;
         }
     }
+    return true;
 }
+
 bool luke::myString::operator == (const luke::myString& str) {
     bool flag = true;
     if (str.size() != _size) {
@@ -304,12 +354,9 @@ bool luke::myString::operator != (const char* str) {
     return (*this == str) ? false : true;
 }
 
-void luke::myString::addSpace(const ul new_size) {
 
-}
-
-luke::ul luke::myString::getSize(const char* str) {
-    ul temp = 0;
+unsigned short luke::myString::getSize(const char* str) {
+    unsigned short temp = 0;
     while (*str) {
         ++temp;
         ++str;
@@ -374,5 +421,7 @@ luke::myString::iterator luke::myString::iterator::operator--(int) {
     ptr--;
     return temp;
 }
+
+
 
 
