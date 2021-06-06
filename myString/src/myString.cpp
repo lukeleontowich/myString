@@ -2,14 +2,14 @@
 
 //  Default Constructor
 luke::myString::myString() {
-    arr = new char[SIZE];
-    _capacity = SIZE;
+    arr = nullptr;
+    _capacity = 0;
     _size = 0;
 }
 
 //  Destructor
 luke::myString::~myString() {
-    if(arr) {
+    if(arr != nullptr) {
         delete [] arr;
     }
 }
@@ -47,23 +47,41 @@ luke::myString::myString(luke::myString&& str) noexcept {
 luke::myString& luke::myString::operator = (const luke::myString& str) {
     if (this != &str) {
         _size = str.size();
-        if (_capacity < str.capacity())
-            _capacity = str.capacity();
-        if (arr == nullptr) {
-            arr = new char[_capacity];
-            for (int i = 0; i < _size; ++i) {
-                arr[i] = str[i];
+        if (_capacity < _size) {
+            _capacity = _size;
+            if (arr == nullptr) {
+                arr = new char[_capacity];
+            } else {
+                delete [] arr;
+                arr = new char[_capacity];
             }
-        } else {
-            delete [] arr;
-            arr = new char[_capacity];
-            for (int i = 0; i < _size; ++i) {
-                arr[i] = str[i];
-            }
+        }
+        for (unsigned short i = 0; i < _size; ++i) {
+            arr[i] = str[i];
         }
     }
     return *this;
 }
+
+luke::myString& luke::myString::operator = (const char* str) {
+    if (arr != str) {
+        _size = getSize(str);
+        if (_capacity < _size) {
+            _capacity = _size;
+            if (arr == nullptr) {
+                arr = new char[_capacity];
+            } else {
+                delete [] arr;
+                arr = new char[_capacity];
+            }
+        }
+        for (unsigned short i = 0; i < _size; ++i) {
+            arr[i] = str[i];
+        }
+    }
+    return *this;
+}
+
 
 //  Move Assignment
 luke::myString& luke::myString::operator = (const luke::myString&& str) {
@@ -114,7 +132,7 @@ void luke::myString::reserve(const unsigned short n) {
         _size = 0;
         _capacity = n;
         arr = new char[_capacity];
-    } else if (_capacity >= n) {
+    } else if (_capacity < n) {
         luke::myString temp(*this);
         _capacity = n;
         delete [] arr;
@@ -132,21 +150,20 @@ void luke::myString::clear() {
     if (arr != nullptr) {
         delete [] arr;
         _size = 0;
-        _capacity = SIZE;
-        //  set parameters to default
-        arr = new char[SIZE];
+        _capacity = 0;
+        arr = nullptr;
     }
 }
 
 bool luke::myString::empty() const {
-    if (arr == nullptr) return true;
-    else return false;
+    return (_size == 0) ? true : false;
 }
 
 void luke::myString::optimize() {
     if (_size == _capacity) return;
     luke::myString temp(*this);
-    _capacity == _size;
+    _capacity = _size;
+    delete [] arr;
     arr = new char[_capacity];
     for (int i = 0; i < _size; ++i) {
         arr[i] = temp[i];
@@ -169,55 +186,40 @@ const char& luke::myString::operator[] (const unsigned short index) const {
 }
 
 luke::myString& luke::myString::operator += (const luke::myString& str) {
-    if (_size + str.size() > _capacity) {
-        luke::myString temp(*this);
-        delete [] arr;
-        _capacity += str.size();
-        _size += str.size();
+    unsigned short j = _size;
+    _size += str.size();
+    luke::myString temp(*this);
+    if (_size > _capacity) {
+        _capacity = _size;
         arr = new char[_capacity];
-        int i = 0;
-        for (;i < temp.size(); ++i) {
+        for (unsigned short i = 0; i < temp.size(); ++i) {
             arr[i] = temp[i];
         }
-        int j = 0;
-        for (;i < _size; ++i) {
-            arr[i] = str[j];
-            ++j;
-        }
-    } else {
-        int j = 0;
-        for (int i = _size; i < _size + str.size(); ++i) {
-            arr[i] = str[j];
-            ++j;
-        }
-        _size += str.size();
     }
+    for (unsigned short i = 0; i < str.size(); ++i) {
+        arr[j] = str[i];
+        ++j;
+    }
+    return *this;
 }
+
 luke::myString& luke::myString::operator += (const char* str) {
-    unsigned short str_size = getSize(str);
-    if (_size + str_size > _capacity) {
-        luke::myString temp(*this);
-        delete [] arr;
-        _capacity = temp.size() + str_size;
-        _size = _capacity;
+    unsigned short j = _size;
+    auto str_size = getSize(str);
+    _size += str_size;
+    luke::myString temp(*this);
+    if (_size > _capacity) {
+        _capacity = _size;
         arr = new char[_capacity];
-        unsigned short i = 0;
-        for (;i < temp.size(); ++i) {
+        for (unsigned short i = 0; i < temp.size(); ++i) {
             arr[i] = temp[i];
         }
-        int j = 0;
-        for (;i < _size; ++i) {
-            arr[i] = str[j];
-            ++j;
-        }
-    } else {
-        int j = 0;
-        _size += str_size;
-        for (int i = _size; i < _size + str_size; ++i) {
-            arr[i] = str[j];
-            ++j;
-        }
     }
+    for (unsigned short i = 0; i < str_size; ++i) {
+        arr[j] = str[i];
+        ++j;
+    }
+    return *this;
 }
 luke::myString& luke::myString::operator += (const char c) {
     if (_size + 1 > _capacity) {
@@ -233,6 +235,7 @@ luke::myString& luke::myString::operator += (const char c) {
     } else {
         arr[_size+1] = c;
     }
+    return *this;
 }
 
 void luke::myString::insert(const unsigned short pos, const luke::myString& str) {
@@ -364,12 +367,12 @@ unsigned short luke::myString::getSize(const char* str) {
     return temp;
 }
 
-luke::myString::iterator luke::myString::begin() {
+luke::myString::myStringIterator luke::myString::begin() {
     return &arr[0];
 }
 
-luke::myString::iterator luke::myString::end() {
-    return &arr[_size-1];
+luke::myString::myStringIterator luke::myString::end() {
+    return &arr[_size];
 }
 
 char* luke::myString::cbegin() const {
@@ -387,41 +390,42 @@ void luke::myString::print() {
     }
 }
 
-
+/*
 
 //  Iterator
-luke::myString::iterator::iterator(pointer p) : ptr(p) {}
+luke::myString::iterator::iterator(pointer p) : _ptr(p) {}
+
 
 char& luke::myString::iterator::operator*() const {
-    return *ptr;
+    return *_ptr;
 }
 
 char* luke::myString::iterator::operator->() {
-    return ptr;
+    return _ptr;
 }
 
 luke::myString::iterator& luke::myString::iterator::operator++() {
-    ptr++;
+    _ptr++;
     return *this;
 }
 
 luke::myString::iterator luke::myString::iterator::operator++(int) {
     iterator temp = *this;
-    ptr++;
+    _ptr++;
     return temp;
 }
 
 luke::myString::iterator& luke::myString::iterator::operator--() {
-    ptr--;
+    _ptr--;
     return *this;
 }
 
 luke::myString::iterator luke::myString::iterator::operator--(int) {
     iterator temp = *this;
-    ptr--;
+    _ptr--;
     return temp;
 }
-
+*/
 
 
 

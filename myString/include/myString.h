@@ -20,7 +20,7 @@ class myString
     unsigned short getSize(const char* str);
 
 public:
-    struct iterator;
+    class myStringIterator;
     //  Default Constructor
     myString();
 
@@ -37,6 +37,7 @@ public:
 
     //  Copy Assignment
     luke::myString & operator = (const luke::myString& str);
+    luke::myString & operator = (const char* str);
 
     //  Move Assignment
     luke::myString & operator = (const luke::myString&& str);
@@ -78,8 +79,8 @@ public:
     bool operator != (const char* str);
 
 
-    luke::myString::iterator begin();
-    luke::myString::iterator end();
+    luke::myString::myStringIterator begin();
+    luke::myString::myStringIterator end();
 
     char* cbegin() const;
     char* cend() const;
@@ -88,6 +89,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& o,
                                       const luke::myString& str) {
+
         for (unsigned short i = 0; i < str.size(); ++i) {
             o << str.arr[i];
         }
@@ -101,29 +103,82 @@ public:
         return in;
     }
 
-    struct iterator
-    {
-        using iterator_category = std::bidirectional_iterator_tag;
-        using difference_type = std::ptrdiff_t;
-        using value_type = char;
-        using pointer = char*;
-        using reference = char&;
-        iterator(pointer p);
-        reference operator*() const;
-        pointer operator->();
-        iterator& operator ++ ();
-        iterator operator++(int);
-        iterator& operator -- ();
-        iterator operator--(int);
+    class myStringIterator : public std::iterator<std::random_access_iterator_tag, char> {
+        char* _ptr;
+    public:
+        myStringIterator(char* ptr) : _ptr(ptr) {}
+        myStringIterator(const myStringIterator& it) : _ptr(it._ptr) {}
+        myStringIterator& operator=(const myStringIterator& rhs) {
+            if (this != &rhs) {
+                _ptr = rhs._ptr;
+            }
+            return *this;
+        }
+        myStringIterator& operator=(char* rhs) {
+            _ptr = rhs;
+            return *this;
+        }
 
-        friend bool operator == (const iterator& i1, const iterator& i2) {
-            return ((i1.ptr == i2.ptr) ? true : false);
+        char& operator*() const {return *_ptr;}
+        char* operator->() {return _ptr;}
+
+
+        myStringIterator& operator ++ () {
+            ++_ptr;
+            return *this;
         }
-        friend bool operator != (const iterator& i1, const iterator& i2) {
-            return ((i1.ptr == i2.ptr) ? false : true);
+        myStringIterator operator++(int) {
+            myStringIterator temp(*this);
+            ++_ptr;
+            return temp;
         }
-    private:
-        pointer ptr;
+        myStringIterator& operator -- () {
+            --_ptr;
+            return *this;
+        }
+        myStringIterator operator--(int) {
+            myStringIterator temp(*this);
+            --_ptr;
+            return temp;
+        }
+        int operator-(const myStringIterator& rhs) const {return _ptr - rhs._ptr;}
+        myStringIterator operator+(const int rhs) const {return myStringIterator(_ptr + rhs);}
+        myStringIterator operator-(const int rhs) const {return myStringIterator(_ptr - rhs);}
+
+        friend myStringIterator operator+(const int& lhs, const myStringIterator& rhs) {
+            return myStringIterator(lhs + rhs._ptr);
+        }
+        friend myStringIterator operator-(const myStringIterator& lhs, const int& rhs) {
+            return myStringIterator(lhs._ptr - rhs);
+        }
+
+        friend bool operator == (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr == lhs._ptr;
+        }
+        friend bool operator != (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr != lhs._ptr;
+        }
+        friend bool operator < (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr < lhs._ptr;
+        }
+        friend bool operator > (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr > lhs._ptr;
+        }
+        friend bool operator <= (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr <= lhs._ptr;
+        }
+        friend bool operator >= (const myStringIterator& rhs, const myStringIterator& lhs) {
+            return rhs._ptr >= lhs._ptr;
+        }
+
+        myStringIterator& operator+=(const int rhs) {
+            _ptr = _ptr + rhs;
+            return *this;
+        }
+        myStringIterator& operator-=(const int rhs) {
+            _ptr -= rhs;
+            return *this;
+        }
 
     };
 

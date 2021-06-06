@@ -12,7 +12,7 @@ TEST(testFramework, test1) {
 TEST(testMyString, testDefaultConstructor) {
     luke::myString str1;
     EXPECT_EQ(str1.size(), 0);
-    EXPECT_EQ(str1.capacity(), 32);
+    EXPECT_EQ(str1.capacity(), 0);
 }
 
 TEST(testMyString, testConstructor) {
@@ -20,6 +20,7 @@ TEST(testMyString, testConstructor) {
     EXPECT_EQ(str1.size(), 11);
     EXPECT_EQ(str1.capacity(), 11);
     EXPECT_EQ(str1.at(0), 'H');
+    EXPECT_TRUE(str1 == "Hello World");
 
     const char* c = nullptr;
     EXPECT_THROW(luke::myString str1(c), std::runtime_error);
@@ -85,7 +86,7 @@ TEST(testMyString, testReserve) {
     EXPECT_EQ(0, str3.size());
     str3 = "bonjour";
     EXPECT_EQ(20, str3.capacity());
-    EXPECT_EQ(7, str3.capacity());
+    EXPECT_EQ(7, str3.size());
     EXPECT_TRUE(str3 == "bonjour");
 }
 
@@ -104,7 +105,18 @@ TEST(testMyString, testEmpty) {
 }
 
 TEST(testMyString, testOptimize) {
+    luke::myString str1 = "Hello";
+    str1.reserve(50);
+    luke::myString str2(" world");
+    str1 += str2;
+    EXPECT_EQ(11, str1.size());
+    EXPECT_EQ(50, str1.capacity());
+    EXPECT_TRUE(str1 == "Hello world");
 
+    str1.optimize();
+    EXPECT_EQ(11, str1.size());
+    EXPECT_EQ(11, str1.capacity());
+    EXPECT_TRUE(str1 == "Hello world");
 }
 
 TEST(testMyString, testAt) {
@@ -139,7 +151,7 @@ TEST(testMyString, testNotEquals) {
 
 }
 
-TEST(testMyString, testPlusEquals) {
+TEST(testMyString, testPlusEquals1) {
     luke::myString str1("Good ");
     luke::myString str2("Morning");
     luke::myString str3;
@@ -154,12 +166,23 @@ TEST(testMyString, testPlusEquals) {
     EXPECT_TRUE((str3 == "Good Morning") ? true : false);
     EXPECT_EQ(12, str3.size());
     EXPECT_EQ(30, str3.capacity());
+}
 
+TEST(testMyString, testPlusEquals2) {
 
     luke::myString str4("Bonjour ");
     str4 += "et Bienvenue";
     EXPECT_TRUE((str4 == "Bonjour et Bienvenue") ? true : false);
 
+    luke::myString str6("Vancouver ");
+    str6.reserve(40);
+    str6 += "Canada";
+    EXPECT_EQ(16, str6.size());
+    EXPECT_EQ(40, str6.capacity());
+    EXPECT_TRUE(str6 == "Vancouver Canada");
+}
+
+TEST(testMyString, testPlusEquals3) {
     luke::myString str5("my string");
     str5 += 's';
     EXPECT_TRUE((str5 == "my strings") ? true : false);
@@ -170,7 +193,6 @@ TEST(testMyString, testInsert1) {
     luke::myString str2("name is ");
     str1.insert(3, str2);
     EXPECT_TRUE(str1 == "My name is Luke");
-    std::cout << str1 << "\n";
     EXPECT_THROW(str1.insert(15, str2), std::runtime_error);
     EXPECT_EQ(15, str1.capacity());
     EXPECT_EQ(15, str1.size());
@@ -180,13 +202,13 @@ TEST(testMyString, testInsert1) {
     str3 = "My Luke";
     str3.insert(3, str2);
     EXPECT_TRUE(str3 == "My name is Luke");
-    EXPECT_EQ(20, str3.size());
-    EXPECT_EQ(14, str3.capacity());
+    EXPECT_EQ(15, str3.size());
+    EXPECT_EQ(20, str3.capacity());
 }
 
 TEST(testMyString, testInsert2) {
     luke::myString str4("Bonjour Luke");
-    str4.insert(8, ", mon nom est ");
+    str4.insert(7, ", mon nom est");
     EXPECT_TRUE(str4 == "Bonjour, mon nom est Luke");
     EXPECT_EQ(25, str4.size());
     EXPECT_EQ(25, str4.capacity());
@@ -195,7 +217,8 @@ TEST(testMyString, testInsert2) {
     luke::myString str5;
     str5.reserve(30);
     str5 = "Bonjour Luke";
-    EXPECT_TRUE(str5 == ", mon nom est ");
+    str5.insert(7, ", mon nom est");
+    EXPECT_TRUE(str5 == "Bonjour, mon nom est Luke");
     EXPECT_EQ(25, str5.size());
     EXPECT_EQ(30, str5.capacity());
 }
@@ -208,8 +231,6 @@ TEST(testMyString, testErase) {
     EXPECT_TRUE((str1 == "Ho") ? true : false);
     EXPECT_THROW(str2.erase(-1, 4), std::runtime_error);
     EXPECT_THROW(str3.erase(1,5), std::runtime_error);
-
-    std::cout << "str1: " << str1 << "\n";
 }
 
 TEST(testMyString, testEqualTo) {
@@ -234,31 +255,80 @@ TEST(testMyString, testNotEqualTo) {
     EXPECT_TRUE(str2 != str3);
 }
 
-TEST(testFriends, testIoStream) {
-    /*luke::myString str1;
-    std::cin >> str1;
-    EXPECT_TRUE((str1 == "Hello") ? true : false);
-    EXPECT_EQ(5 ,str1.size());
-    EXPECT_EQ(5, str1.size());*/
+TEST(testAlgorithms, testAllAnyNoneOf) {
+    luke::myString str1("Hello");
+    luke::myString str2("lllll");
+    EXPECT_FALSE(std::all_of(str1.begin(), str1.end(),[](char c) {return (c == 'l');}));
+    EXPECT_TRUE(std::any_of(str1.begin(), str1.end(),[](char c) {return (c == 'l');}));
+    EXPECT_TRUE(std::none_of(str1.begin(), str1.end(), [](char c){return c == 'w';}));
+
+    EXPECT_TRUE(std::all_of(str2.begin(), str2.end(), [](char c){return c == 'l';}));
+    EXPECT_FALSE(std::any_of(str2.begin(), str2.end(), [](char c){return c == 'h';}));
+    EXPECT_FALSE(std::none_of(str2.begin(), str2.end(), [](char c){return c == 'l';}));
 }
 
-/*
-TEST(testString, testResize) {
-    std::string str1("Hello");
-    str1.resize(10);
-    EXPECT_EQ(str1.capacity(), 10);
-    EXPECT_EQ(str1.size(), 10);
-    EXPECT_EQ(str1, "Hello");
-    str1.push_back('5');
-    std::cout << "TEST: " << str1 << std::endl;
+TEST(testAlgorithms, testFind) {
+    luke::myString str1 = "where is the first t?";
+    auto it = std::find(str1.begin(), str1.end(), 't');
+    EXPECT_EQ(9, it - str1.begin());
 }
-*/
+
+TEST(testAlgorithms, testCount) {
+    luke::myString str1 = "How many n's in this string?";
+    auto ans = std::count(str1.begin(), str1.end(), 'n');
+    EXPECT_EQ(4, ans);
+}
+
+TEST(testAlgorithms, testSearch) {
+    luke::myString str1("Searching this string");
+    const char* str2 = "this";
+    auto it = std::search(str1.begin(), str1.end(), str2, str2+4);
+    EXPECT_EQ(10, it - str1.begin());
+}
+
+TEST(testAlgorithms, testCopy) {
+
+}
+
+TEST(testAlgorithms, testMove) {
+
+}
+
+TEST(testAlgorithms, testSwap) {
+
+}
+
+TEST(testAlgorithms, testReplace) {
+
+}
+
+TEST(testAlgorithms, testFill) {
+
+}
+
+TEST(testAlgorithms, testRemove) {
+
+}
+
+TEST(testAlgorithms, testUnnique) {
+
+}
+
+TEST(testAlgorithms, testReverse) {
+
+}
 
 TEST(testAlgorithms, testSort) {
     luke::myString str1("asdfbdg");
-    std::sort(str1.cbegin(), str1.cend());
+    std::sort(str1.begin(), str1.end());
+    //std::sort(str1.cbegin(), str1.cend());
     EXPECT_TRUE(str1 == "abddfgs");
 }
+
+
+
+
+
 
 
 
