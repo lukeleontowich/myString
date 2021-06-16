@@ -18,6 +18,7 @@ class myString
     unsigned short _size = 0;
     unsigned short _capacity = 0;
     unsigned short getSize(const char* str);
+    void copy(const myString& str);
 
 public:
     class myStringIterator;
@@ -179,6 +180,7 @@ public:
             _ptr -= rhs;
             return *this;
         }
+        char& operator[](const int& rhs) {return _ptr[rhs];}
 
     };
 

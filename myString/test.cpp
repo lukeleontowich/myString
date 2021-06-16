@@ -34,7 +34,12 @@ TEST(testMyString, testCopyConstructor) {
 }
 
 TEST(testMyString, testMoveConstructor) {
-
+    luke::myString str1("hello");
+    auto str2 = std::move(str1);
+    EXPECT_TRUE(str1.empty());
+    EXPECT_TRUE(str2 == "hello");
+    EXPECT_EQ(0, str1.size());
+    EXPECT_EQ(0, str1.capacity());
 }
 
 TEST(testMyString, testCopyAssignment) {
@@ -155,10 +160,13 @@ TEST(testMyString, testPlusEquals1) {
     luke::myString str1("Good ");
     luke::myString str2("Morning");
     luke::myString str3;
+
     str3.reserve(30);
     EXPECT_EQ(30, str3.capacity());
     str3 = str1;
-    str1 += str2;
+
+    str1 += str2;  //  Error Here
+
     EXPECT_EQ(((str1 == "Good Morning") ? true : false), true);
     EXPECT_EQ(12, str1.size());
     EXPECT_EQ(12, str1.capacity());
@@ -166,6 +174,7 @@ TEST(testMyString, testPlusEquals1) {
     EXPECT_TRUE((str3 == "Good Morning") ? true : false);
     EXPECT_EQ(12, str3.size());
     EXPECT_EQ(30, str3.capacity());
+
 }
 
 TEST(testMyString, testPlusEquals2) {
@@ -236,6 +245,8 @@ TEST(testMyString, testErase) {
 TEST(testMyString, testEqualTo) {
     luke::myString str1("Bonjour");
     luke::myString str2("Bonjour");
+    EXPECT_EQ(7, str1.size());
+    EXPECT_EQ(7, str1.capacity());
     luke::myString str3(str1);
     auto str4 = str2;
     EXPECT_TRUE(str1 == str2);
@@ -286,9 +297,6 @@ TEST(testAlgorithms, testSearch) {
     EXPECT_EQ(10, it - str1.begin());
 }
 
-TEST(testAlgorithms, testCopy) {
-
-}
 
 TEST(testAlgorithms, testMove) {
 
