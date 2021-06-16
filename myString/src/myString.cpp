@@ -243,25 +243,6 @@ luke::myString& luke::myString::operator += (const char* str) {
         }
     }
     _size += str_size;
-
-
-    /*
-    unsigned short j = _size;
-    auto str_size = getSize(str);
-    _size += str_size;
-    luke::myString temp(*this);
-    if (_size > _capacity) {
-        _capacity = _size;
-        delete [] arr;
-        arr = new char[_capacity];
-        for (unsigned short i = 0; i < temp.size(); ++i) {
-            arr[i] = temp[i];
-        }
-    }
-    for (unsigned short i = 0; i < str_size; ++i) {
-        arr[j] = str[i];
-        ++j;
-    }*/
     return *this;
 }
 luke::myString& luke::myString::operator += (const char c) {
@@ -287,85 +268,73 @@ void luke::myString::insert(const unsigned short pos, const luke::myString& str)
         throw myString_out_of_range();
         return;
     }
+    if (_size + str.size() > _capacity) {
+        _capacity = _size + str.size();
+    }
+    char* temp = new char[_capacity];
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    for (; j < pos; ++j, ++i) {
+        temp[i] = arr[j];
+    }
+    for (; k < str.size(); ++k, ++i) {
+        temp[i] = str[k];
+    }
+    for (; j < _size; ++j, ++i) {
+        temp[i] = arr[j];
+    }
+    delete [] arr;
+    arr = temp;
     _size += str.size();
-    luke::myString temp(*this);
-    if (_size > _capacity) {
-        _capacity = _size;
-        delete [] arr;
-        arr = new char[_capacity];
-    }
-
-    unsigned short i = 0, j = 0, k = 0;
-    while (i < pos) {
-        arr[i] = temp[k];
-        ++i;
-        ++k;
-    }
-    while (j < str.size()) {
-        arr[i] = str[j];
-        ++i;
-        ++j;
-    }
-    while (k < temp.size()) {
-        arr[i] = temp[k];
-        ++i;
-        ++k;
-    }
-
 }
 
 void luke::myString::insert(const unsigned short pos, const char* str) {
+    auto str_size = getSize(str);
     if (pos < 0 || pos >= _size) {
         throw myString_out_of_range();
         return;
     }
-    auto str_size = getSize(str);
+    if (_size + str_size > _capacity) {
+        _capacity = _size + str_size;
+    }
+    char* temp = new char[_capacity];
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    for (; j < pos; ++j, ++i) {
+        temp[i] = arr[j];
+    }
+    for (; k < str_size; ++k, ++i) {
+        temp[i] = str[k];
+    }
+    for (; j < _size; ++j, ++i) {
+        temp[i] = arr[j];
+    }
+    delete [] arr;
+    arr = temp;
     _size += str_size;
-    luke::myString temp(*this);
-    if (_size > _capacity) {
-        _capacity = _size;
-        delete [] arr;
-        arr = new char[_capacity];
-    }
-
-    unsigned short i = 0, j = 0, k = 0;
-    while (i < pos) {
-        arr[i] = temp[k];
-        ++i;
-        ++k;
-    }
-    while (j < str_size) {
-        arr[i] = str[j];
-        ++i;
-        ++j;
-    }
-    while (k < temp.size()) {
-        arr[i] = temp[k];
-        ++i;
-        ++k;
-    }
 }
 
 bool luke::myString::erase(const unsigned short pos, const unsigned short len) {
     if (pos < 0 || pos >= _size || pos+len >= _size) {
         throw myString_out_of_range();
         return false;
-    } else {
-        luke::myString temp(*this);
-        delete [] arr;
-        _size = temp.size() - len;
-        _capacity = _size;
-        arr = new char[_capacity];
-        unsigned short i = 0;
-        while (i < pos) {
-            arr[i] = temp[i];
-            ++i;
-        }
-        while (i < _size) {
-            arr[i] = temp[i+len];
-            ++i;
-        }
     }
+    char* temp = new char[_capacity];
+    int i = 0;
+    int j = 0;
+    for(; j < pos; ++i, ++j) {
+        temp[i] = arr[j];
+    }
+    j += len;
+    for(; j < _size; ++i, ++j) {
+        temp[i] = arr[j];
+    }
+    delete [] arr;
+    arr = temp;
+    _size -= len;
+
     return true;
 }
 

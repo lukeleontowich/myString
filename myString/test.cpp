@@ -240,6 +240,7 @@ TEST(testMyString, testErase) {
     EXPECT_TRUE((str1 == "Ho") ? true : false);
     EXPECT_THROW(str2.erase(-1, 4), std::runtime_error);
     EXPECT_THROW(str3.erase(1,5), std::runtime_error);
+    std::cout << "erase actual: " << str1 << "\n";
 }
 
 TEST(testMyString, testEqualTo) {
