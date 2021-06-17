@@ -41,7 +41,7 @@ public:
     luke::myString & operator = (const char* str);
 
     //  Move Assignment
-    luke::myString & operator = (const luke::myString&& str);
+    luke::myString & operator = (luke::myString&& str);
 
     //  size
     unsigned size() const;

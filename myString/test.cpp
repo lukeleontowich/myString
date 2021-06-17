@@ -49,22 +49,32 @@ TEST(testMyString, testCopyAssignment) {
 }
 
 TEST(testMyString, testMoveAssignment) {
+    luke::myString str1("hello");
+    auto str2 = std::move(str1);
+    EXPECT_TRUE(str1.empty());
+    EXPECT_TRUE(str2 == "hello");
+    EXPECT_EQ(0, str1.size());
+    EXPECT_EQ(0, str1.capacity());
 
+    str1 = std::move(str2);
+    EXPECT_TRUE(str2.empty());
+    EXPECT_TRUE(str1 == "hello");
+    EXPECT_EQ(0, str2.size());
+    EXPECT_EQ(0, str2.capacity());
 }
 
 
 TEST(testMyString, testResize) {
-    luke::myString str1("Bonjour");
-    luke::myString str2(str1);
-    str2.resize(15);
-    EXPECT_EQ(15, str2.capacity());
-    EXPECT_EQ(7, str2.size());
-    EXPECT_TRUE(str2 == "Bonjour");
-    std::cout << "testing Resize: " << str2 << "\n";
-    str2.resize(6, 'j');
-    EXPECT_EQ(6, str2.capacity());
-    EXPECT_EQ(6, str2.size());
-    EXPECT_TRUE(str2 == "jjjjjj");
+    luke::myString str3("I like to Code in C");
+    unsigned sz = str3.size();
+    str3.resize(sz +2, '+');
+    EXPECT_TRUE(str3 == "I like to Code in C++");
+    std::cout << str3 << "\n";
+
+    str3.resize(14);
+    EXPECT_TRUE(str3 == "I like to Code");
+    std::cout << str3 << "\n";
+
 }
 
 
@@ -323,39 +333,36 @@ TEST(testAlgorithms, testSearch) {
     EXPECT_EQ(10, it - str1.begin());
 }
 
-
-TEST(testAlgorithms, testMove) {
-
-}
-
 TEST(testAlgorithms, testSwap) {
-
+    luke::myString str1("Hello");
+    luke::myString str2("Bonjour");
+    std::swap(str1, str2);
+    EXPECT_TRUE(str1 == "Bonjour");
+    EXPECT_TRUE(str2 == "Hello");
 }
 
 TEST(testAlgorithms, testReplace) {
-
+    luke::myString str1("Hello");
+    std::replace(str1.begin(), str1.end(), 'l', 'w');
+    EXPECT_TRUE(str1 == "Hewwo");
 }
 
-TEST(testAlgorithms, testFill) {
-
-}
-
-TEST(testAlgorithms, testRemove) {
-
-}
-
-TEST(testAlgorithms, testUnnique) {
-
+TEST(testAlgorithms, testUnique) {
+    luke::myString str1("Hello");
+    auto it = std::unique(str1.begin(), str1.end());
+    str1.resize(std::distance(str1.begin(), it));
+    EXPECT_TRUE(str1 == "Helo");
 }
 
 TEST(testAlgorithms, testReverse) {
-
+    luke::myString str1("Bonjour");
+    std::reverse(str1.begin(), str1.end());
+    EXPECT_TRUE(str1 == "ruojnoB");
 }
 
 TEST(testAlgorithms, testSort) {
     luke::myString str1("asdfbdg");
     std::sort(str1.begin(), str1.end());
-    //std::sort(str1.cbegin(), str1.cend());
     EXPECT_TRUE(str1 == "abddfgs");
 }
 

@@ -100,8 +100,19 @@ luke::myString& luke::myString::operator = (const char* str) {
 
 
 //  Move Assignment
-luke::myString& luke::myString::operator = (const luke::myString&& str) {
-
+luke::myString& luke::myString::operator = (luke::myString&& str) {
+    if (*this != str) {
+        _size = std::move(str._size);
+        _capacity = std::move(str._capacity);
+        if (arr != nullptr) {
+            delete [] arr;
+            arr = nullptr;
+        }
+        arr = std::move(str.arr);
+        str.arr = nullptr;
+        str.clear();
+    }
+    return *this;
 }
 
 //  Getter for _size
@@ -109,19 +120,29 @@ unsigned luke::myString::size() const {
     return _size;
 }
 
-//  Resizes the string and sets all char to the same char
+//  Resizes the string and adds the char c to the left over spots
 void luke::myString::resize(const unsigned n, const char c) {
     if (n < 0 || n >= MAX_SIZE) {
         throw myString_out_of_range();
         return;
     }
-    delete [] arr;
-    _capacity = n;
-    _size = n;
-    arr = new char[_size];
-    for (unsigned i = 0; i < _size; ++i) {
-        arr[i] = c;
+    if (n > _size) {
+        _capacity = n;
+        char* temp = new char[_capacity];
+        unsigned i = 0;
+        for (; i < _size; ++i) {
+            temp[i] = arr[i];
+        }
+        for (; i < _capacity; ++i) {
+            temp[i] = c;
+        }
+        delete [] arr;
+        arr = temp;
+        _size = _capacity;
+    } else {
+        _size = n;
     }
+
 
 }
 
@@ -131,15 +152,19 @@ void luke::myString::resize(const unsigned n) {
         throw myString_out_of_range();
         return;
     }
-    if (n < _capacity)
-        return;
-    _capacity = n;
-    char* temp = new char[_capacity];
-    for (unsigned i = 0; i < _size; ++i) {
-        temp[i] = arr[i];
+    if (n > _size) {
+        _capacity = n;
+        char* temp = new char[_capacity];
+        for (unsigned i = 0; i < _size; ++i) {
+            temp[i] = arr[i];
+        }
+        delete [] arr;
+        arr = temp;
+    } else {
+        _size = n;
     }
-    delete [] arr;
-    arr = temp;
+
+
 }
 
 // gets the capacity
@@ -371,7 +396,6 @@ bool luke::myString::erase(const unsigned pos, const unsigned len) {
 bool luke::myString::erase(const luke::myString::myStringIterator& it) {
     if (it != this->end()) {
         unsigned pos = it - this->begin();
-        std::cout << "pos: " << pos << "\n";
         if (pos < 0 || pos >= _size) {
             throw myString_out_of_range();
         }
