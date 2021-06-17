@@ -60,6 +60,7 @@ TEST(testMyString, testResize) {
     EXPECT_EQ(15, str2.capacity());
     EXPECT_EQ(7, str2.size());
     EXPECT_TRUE(str2 == "Bonjour");
+    std::cout << "testing Resize: " << str2 << "\n";
     str2.resize(6, 'j');
     EXPECT_EQ(6, str2.capacity());
     EXPECT_EQ(6, str2.size());
@@ -240,7 +241,31 @@ TEST(testMyString, testErase) {
     EXPECT_TRUE((str1 == "Ho") ? true : false);
     EXPECT_THROW(str2.erase(-1, 4), std::runtime_error);
     EXPECT_THROW(str3.erase(1,5), std::runtime_error);
-    std::cout << "erase actual: " << str1 << "\n";
+    luke::myString str4("Bonjour");
+    str4.erase(6, 1);
+    EXPECT_TRUE(str4 == "Bonjou");
+}
+
+TEST(testMyString, testErase2) {
+    luke::myString str1("Hello");
+    auto it = std::find(str1.begin(), str1.end(), 'e');
+    str1.erase(it);
+    EXPECT_TRUE(str1 == "Hllo");
+
+    it = std::find(str1.begin(), str1.end(), 'o');
+    str1.erase(it);
+    EXPECT_TRUE(str1 == "Hll");
+
+    it = std::find(str1.begin(), str1.end(), 'e');
+    EXPECT_FALSE(str1.erase(it));
+}
+
+TEST(testMyString, testErase3) {
+    luke::myString str1("Hello Everyone");
+    auto it1 = std::find(str1.begin(), str1.end(), 'o');
+    auto it2 = std::find(str1.begin(), str1.end(), 'y');
+    str1.erase(it1, it2);
+    EXPECT_TRUE(str1 == "Hellyone");
 }
 
 TEST(testMyString, testEqualTo) {

@@ -8,17 +8,17 @@
 
 namespace luke
 {
-constexpr unsigned short SIZE = 32;
-constexpr unsigned short MAX_SIZE = 60000;
+constexpr unsigned MAX_SIZE = 60000;
 
 
 class myString
 {
     char* arr = nullptr;
-    unsigned short _size = 0;
-    unsigned short _capacity = 0;
-    unsigned short getSize(const char* str);
-    void copy(const myString& str);
+    unsigned _size = 0;
+    unsigned _capacity = 0;
+
+    //  Returns the size of a const char* string
+    unsigned getSize(const char* str);
 
 public:
     class myStringIterator;
@@ -44,14 +44,14 @@ public:
     luke::myString & operator = (const luke::myString&& str);
 
     //  size
-    unsigned short size() const;
+    unsigned size() const;
 
-    void resize(const unsigned short n, const char c);
-    void resize(const unsigned short n);
+    void resize(const unsigned n, const char c);
+    void resize(const unsigned n);
 
-    unsigned short capacity() const;
+    unsigned capacity() const;
 
-    void reserve(const unsigned short);
+    void reserve(const unsigned);
 
     void clear();
 
@@ -59,19 +59,21 @@ public:
 
     void optimize();
 
-    char& at(const unsigned short index) const;
+    char& at(const unsigned index) const;
 
-    char& operator[] (const unsigned short index);
-    const char& operator[] (const unsigned short index) const;
+    char& operator[] (const unsigned index);
+    const char& operator[] (const unsigned index) const;
 
     luke::myString& operator += (const luke::myString& str);
     luke::myString& operator += (const char* str);
     luke::myString& operator += (const char c);
 
-    void insert(const unsigned short pos, const luke::myString& str);
-    void insert(const unsigned short pos, const char* str);
+    void insert(const unsigned pos, const luke::myString& str);
+    void insert(const unsigned pos, const char* str);
 
-    bool erase(const unsigned short pos, const unsigned short len);
+    bool erase(const unsigned pos, const unsigned len);
+    bool erase(const luke::myString::myStringIterator& it);
+    bool erase(const luke::myString::myStringIterator& it1, const luke::myString::myStringIterator& it2);
 
     bool operator == (const luke::myString& str);
     bool operator == (const char* str);
@@ -91,7 +93,7 @@ public:
     friend std::ostream& operator << (std::ostream& o,
                                       const luke::myString& str) {
 
-        for (unsigned short i = 0; i < str.size(); ++i) {
+        for (unsigned i = 0; i < str.size(); ++i) {
             o << str.arr[i];
         }
         return o;
