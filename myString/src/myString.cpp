@@ -20,7 +20,7 @@ luke::myString::~myString() {
         delete [] arr;
     }
 }
-// Constructor
+//  Constructor
 luke::myString::myString(const char* str) {
     if (str) {
         _size = getSize(str);
@@ -50,7 +50,7 @@ luke::myString::myString(const luke::myString& str) {
     }
 }
 
-// Move Constructor
+//  Move Constructor
 luke::myString::myString(luke::myString&& str) noexcept {
     arr = std::move(str.arr);
     str.arr = nullptr;
@@ -122,12 +122,12 @@ luke::myString& luke::myString::operator = (luke::myString&& str) {
     return *this;
 }
 
-//  Getter for _size
+//  Getter for size
 unsigned luke::myString::size() const {
     return _size;
 }
 
-//  Resizes the string and adds the char c to the left over spots
+//  Resizes the string and adds the char c to the leftover spots
 void luke::myString::resize(const unsigned n, const char c) {
     if (n < 0 || n >= MAX_SIZE) {
         throw myString_out_of_range();
@@ -179,7 +179,7 @@ void luke::myString::resize(const unsigned n) {
 
 }
 
-// gets the capacity
+//  Gets the capacity
 unsigned luke::myString::capacity() const {
     return _capacity;
 }
@@ -208,7 +208,7 @@ void luke::myString::reserve(const unsigned n) {
     }
 }
 
-//  resets the string to it's default parameters
+//  Resets the string to its default parameters
 void luke::myString::clear() {
     if (arr != nullptr) {
         delete [] arr;
@@ -218,12 +218,12 @@ void luke::myString::clear() {
     _capacity = 0;
 }
 
-//  Checks if the string has no elements (Could have capacity though just 0 size)
+//  Checks if the string has no elements (could have capacity though just 0 size)
 bool luke::myString::empty() const {
     return (_size == 0);
 }
 
-//  Makes the _capacity and _size of string equal
+//  Makes the capacity and size of string equal
 void luke::myString::optimize() {
     //  checks if already optimized
     if (_size == _capacity) {
@@ -248,7 +248,7 @@ char& luke::myString::at(const unsigned index) const {
     }
 }
 
-//  Using the [] operator do the same thing as the at function (rhs)
+//  Using the [] operator do the same thing as the at() function (rhs)
 char& luke::myString::operator[] (const unsigned index) {
     return this->at(index);
 }
@@ -257,7 +257,7 @@ const char& luke::myString::operator[] (const unsigned index) const {
     return this->at(index);
 }
 
-//  Append a myString into another myString
+//  Append a myString onto another myString
 luke::myString& luke::myString::operator += (const luke::myString& str) {
     if (_size + str.size() > capacity()) {
         _capacity = _size + str.size();
@@ -282,7 +282,7 @@ luke::myString& luke::myString::operator += (const luke::myString& str) {
     return *this;
 }
 
-//  Append a regular string into a myString string
+//  Append a regular string onto a myString
 luke::myString& luke::myString::operator += (const char* str) {
     auto str_size = getSize(str);
     if (_size + str_size > capacity()) {
@@ -307,7 +307,7 @@ luke::myString& luke::myString::operator += (const char* str) {
     return *this;
 }
 
-//  Append a char into a myString string
+//  Append a char into a myString
 luke::myString& luke::myString::operator += (const char c) {
     if (_size + 1 > _capacity) {
         _capacity = _size + 1;
@@ -418,7 +418,7 @@ bool luke::myString::erase(const luke::myString::myStringIterator& it) {
     }
 }
 
-//  Erase starting from it1 to one before it2
+//  Erase starting from it1 to one position before it2
 bool luke::myString::erase(const luke::myString::myStringIterator& it1, const luke::myString::myStringIterator& it2) {
     unsigned pos = it1 - this->begin();
     unsigned len = it2 - it1;
@@ -472,7 +472,7 @@ unsigned luke::myString::getSize(const char* str) {
 luke::myString::myStringIterator luke::myString::begin() {
     return &arr[0];
 }
-//  Returns an Iterator to one past the end of the container
+//  Returns an Iterator to one position past the end of the container
 luke::myString::myStringIterator luke::myString::end() {
     return &arr[_size];
 }
@@ -481,7 +481,7 @@ char* luke::myString::cbegin() const {
     return arr;
 }
 
-//  Rerurns one past the end of the char arr
+//  Returns one position past the end of the char arr
 char* luke::myString::cend() const {
     return arr + _size;
 }

@@ -1,7 +1,7 @@
 /*******************************************************
 *  File:        Exceptions.h
 *  Author:      Luke Leontowich
-*  Description: Exception handling for luke::myString.
+*  Description: Exception handling for luke::myString
 *  Date:        June 18, 2021
 *******************************************************/
 

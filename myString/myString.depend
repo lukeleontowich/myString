@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1623977955 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/src/myString.cpp
+1624039750 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/src/myString.cpp
 	"myString.h"
 
-1624035696 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/myString.h
+1624040125 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/myString.h
 	<iostream>
 	<iterator>
 	"Exceptions.h"
@@ -14,12 +14,12 @@
 	<iostream>
 	<algorithm>
 
-1624033614 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/main.cpp
-	<iostream>
+1624044557 source:/home/lukeleontowich/Documents/Summer2021/myString/myString/main.cpp
 	"myString.h"
+	<iostream>
 	<string>
 	<algorithm>
 
-1622500137 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/Exceptions.h
+1624039793 /home/lukeleontowich/Documents/Summer2021/myString/myString/include/Exceptions.h
 	<stdexcept>
 

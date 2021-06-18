@@ -1,7 +1,7 @@
 /*******************************************************
 *  File:        main.cpp
 *  Author:      Luke Leontowich
-*  Description: Demonstration of luke::myString class.
+*  Description: Demonstration of luke::myString class
 *  Date:        June 18, 2021
 *******************************************************/
 
@@ -10,37 +10,18 @@
 #include <string>
 #include <algorithm>
 
-
-void print(const std::string& str, const luke::myString& mys) {
-    std::cout << "C++ String: " << str << "\n";
-    std::cout << "size: " << str.size() << "\n";
-    std::cout << "capacity: " << str.capacity() << "\n";
-    std::cout << "myString:   " << mys << "\n";
-    std::cout << "size: " << mys.size() << "\n";
-    std::cout << "capacity: " << mys.capacity() << "\n\n";
-}
-
 int main() {
-    //  Default Constructors
-    std::string s1;
-    luke::myString mys1;;
-
-    print(s1, mys1);
-
-    //  Reserve
-    s1.reserve(30);
-    mys1.reserve(30);
-    print(s1, mys1);
-
-    //  Assignment operation
-    s1 = "Hello World!";
-    mys1 = "Hello World!";
-    print(s1, mys1);
+    //  Constructors
+    std::string s1("Hello World");
+    luke::myString mys1("Hello World");
+    std::cout << "C++ String: " << s1 << "\n";
+    std::cout << "myString:   " << mys1 << "\n\n";
 
     //  Insert
     s1.insert(6, "beautiful ");
     mys1.insert(6, "beautiful ");
-    print(s1, mys1);
+    std::cout << "C++ String: " << s1 << "\n";
+    std::cout << "myString:   " << mys1 << "\n\n";
 
     //  Erase
     auto its1 = std::find(s1.begin(), s1.end(), 'H');
@@ -49,14 +30,16 @@ int main() {
     auto itmys1 = std::find(mys1.begin(), mys1.end(), 'H');
     auto itmys2 = std::find(mys1.begin(), mys1.end(), ' ');
     mys1.erase(itmys1, itmys2);
-    print(s1, mys1);
+    std::cout << "C++ String: " << s1 << "\n";
+    std::cout << "myString:   " << mys1 << "\n\n";
 
     //  Generate a substring
     std::string s2 = s1.substr(0, 10);
     luke::myString mys2;
     mys2.resize(mys1.size());
     std::transform(mys1.begin(), mys1.begin() + 10, mys2.begin(), [](char c)->char{return c;});
-    print(s2, mys2);
+    std::cout << "C++ String substring: " << s2 << "\n";
+    std::cout << "myString substring:   " << mys2 << "\n\n";
 
     //  Find
     std::string s3("Hello World");
@@ -86,7 +69,7 @@ int main() {
                                 }
                                 return false;
                            });
-    std::cout << "myString 'World' found at: " << mypos3 << "\n";
+    std::cout << "myString 'World' found at: " << mypos3 << "\n\n";
 
 
 

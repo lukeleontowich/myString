@@ -2,7 +2,7 @@
 *  File:        myString.h
 *  Author:      Luke Leontowich
 *  Description: Definition of luke::myString, definition
-*               and implementation of luke::myString::myIterator.
+*               and implementation of luke::myString::myIterator
 *  Date:        June 18, 2021
 ****************************************************************/
 
@@ -32,7 +32,7 @@ class myString
     //  Capacity of string
     unsigned _capacity = 0;
 
-    //  Helpr function that returns the size of a const char* string
+    //  Helper function that returns the size of a const char* string
     unsigned getSize(const char* str);
 
 public:
@@ -45,7 +45,7 @@ public:
     //  Destructor
     ~myString();
 
-    // Constructor
+    //  Constructor
     myString(const char* str);
 
     //  Copy Constructor
@@ -120,7 +120,7 @@ public:
 
     //  cbegin: Returns a pointer to beginning of the char* arr
     char* cbegin() const;
-    //  cend: Returns a pointer to one past the end of the char* arr
+    //  cend: Returns a pointer to one past the end position of the char* arr
     char* cend() const;
 
     //  Print: prints the string
@@ -143,15 +143,15 @@ public:
         return in;
     }
 
-    //  MyString Iterator Class: Iterators to the luke::myString
-    //  myStringIterator is a random_access_iterator which allows it make use of many of the STL algorithm functions
+    //  myString Iterator Class: Iterators to the luke::myString
+    //  myStringIterator is a random access iterator which allows it make use of many of the STL algorithm functions
     class myStringIterator : public std::iterator<std::random_access_iterator_tag, char> {
         char* _ptr;
     public:
         //  Constructor
         myStringIterator(char* ptr) : _ptr(ptr) {}
 
-        // Copy Constructor
+        //  Copy Constructor
         myStringIterator(const myStringIterator& it) : _ptr(it._ptr) {}
 
         //  Copy Assignments:
@@ -169,7 +169,7 @@ public:
         //  Operator* overload
         char& operator*() const {return *_ptr;}
 
-        //  Operator-> overlad
+        //  Operator-> overload
         char* operator->() {return _ptr;}
 
         //  Operator++: Pre-increment
@@ -196,19 +196,19 @@ public:
             return temp;
         }
 
-        //  Operator-: Subract two iterators and return an integer
+        //  Operator-: Subtract two iterators and return an integer
         int operator-(const myStringIterator& rhs) const {return _ptr - rhs._ptr;}
 
-        //  Operator+: Add an iterator with an integer and return an iterator
+        //  Operator+: Add an iterator to an integer and return an iterator
         myStringIterator operator+(const int rhs) const {return myStringIterator(_ptr + rhs);}
-        //  Operator-: Subtract an iterator with an integer and return an iterator
+        //  Operator-: Subtract an iterator from an integer and return an iterator
         myStringIterator operator-(const int rhs) const {return myStringIterator(_ptr - rhs);}
 
-        //  Operator+: Add an integer with an iterator and return an iterator
+        //  Operator+: Add an integer to an iterator and return an iterator
         friend myStringIterator operator+(const int& lhs, const myStringIterator& rhs) {
             return myStringIterator(lhs + rhs._ptr);
         }
-        //  Operator-: Subtract an integer with an iterator and return an iterator
+        //  Operator-: Subtract an integer from an iterator and return an iterator
         friend myStringIterator operator-(const myStringIterator& lhs, const int& rhs) {
             return myStringIterator(lhs._ptr - rhs);
         }
