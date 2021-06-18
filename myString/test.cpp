@@ -1,3 +1,12 @@
+/****************************************************************
+*  File:        test.cpp
+*  Author:      Luke Leontowich
+*  Description: Testing luke::myString functionality and testing
+                compatibility of luke::myString with the stl
+                algorithm library. Using google testing framework.
+*  Date:        June 18, 2021
+****************************************************************/
+
 #include "gtest/gtest.h"
 #include "myString.h"
 #include <string>
@@ -69,12 +78,11 @@ TEST(testMyString, testResize) {
     unsigned sz = str3.size();
     str3.resize(sz +2, '+');
     EXPECT_TRUE(str3 == "I like to Code in C++");
-    std::cout << str3 << "\n";
+    EXPECT_EQ(sz + 2, str3.size());
 
     str3.resize(14);
     EXPECT_TRUE(str3 == "I like to Code");
-    std::cout << str3 << "\n";
-
+    EXPECT_EQ(14, str3.size());
 }
 
 
@@ -365,15 +373,6 @@ TEST(testAlgorithms, testSort) {
     std::sort(str1.begin(), str1.end());
     EXPECT_TRUE(str1 == "abddfgs");
 }
-
-
-
-
-
-
-
-
-
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);

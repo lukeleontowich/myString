@@ -1,3 +1,10 @@
+/*******************************************************
+*  File:        myString.cpp
+*  Author:      Luke Leontowich
+*  Description: Implementation of luke::myString
+*  Date:        June 18, 2021
+*******************************************************/
+
 #include "myString.h"
 
 //  Default Constructor
@@ -155,11 +162,16 @@ void luke::myString::resize(const unsigned n) {
     if (n > _size) {
         _capacity = n;
         char* temp = new char[_capacity];
-        for (unsigned i = 0; i < _size; ++i) {
+        unsigned i = 0;
+        for (; i < _size; ++i) {
             temp[i] = arr[i];
+        }
+        for (; i < _capacity; ++i) {
+            temp[i] = ' ';
         }
         delete [] arr;
         arr = temp;
+        _size = _capacity;
     } else {
         _size = n;
     }
@@ -413,6 +425,7 @@ bool luke::myString::erase(const luke::myString::myStringIterator& it1, const lu
     return this->erase(pos, len);
 }
 
+//  Comparison operator overloads
 bool luke::myString::operator == (const luke::myString& str) {
     bool flag = true;
     if (str.size() != _size) {
@@ -480,43 +493,6 @@ void luke::myString::print() {
         std::cout << arr[i];
     }
 }
-
-/*
-
-//  Iterator
-luke::myString::iterator::iterator(pointer p) : _ptr(p) {}
-
-
-char& luke::myString::iterator::operator*() const {
-    return *_ptr;
-}
-
-char* luke::myString::iterator::operator->() {
-    return _ptr;
-}
-
-luke::myString::iterator& luke::myString::iterator::operator++() {
-    _ptr++;
-    return *this;
-}
-
-luke::myString::iterator luke::myString::iterator::operator++(int) {
-    iterator temp = *this;
-    _ptr++;
-    return temp;
-}
-
-luke::myString::iterator& luke::myString::iterator::operator--() {
-    _ptr--;
-    return *this;
-}
-
-luke::myString::iterator luke::myString::iterator::operator--(int) {
-    iterator temp = *this;
-    _ptr--;
-    return temp;
-}
-*/
 
 
 
